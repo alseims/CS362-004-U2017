@@ -1,1 +1,1 @@
-Alan Seims
+"This is my assignment-2 submission. Function prototypes and definitions for Smithy, Adventurer, Minion, Cutpurse, and Sea Hag were added to dominion.h and .c files. Bugs were introduced to the Smithy, Adventurer, Minion, and Cutpurse card functions."
