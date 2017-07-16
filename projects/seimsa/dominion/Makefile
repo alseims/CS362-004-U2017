@@ -30,14 +30,14 @@ interface.o: interface.h interface.c
 
 runtests: testGainCard 
 	./testGainCard &> unittestresult.out
-	gcov dominion.c >> unittestresult.out
+	gcov-7.1 -b -c  dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
-
 
 player: player.c interface.o
 	$(CC) -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom player testDrawCard testBuyCard badTestDrawCard
+all: playdom player testDrawCard testBuyCard badTestDrawCard testGainCard
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe badTestDrawCard badTestDrawCard.exe
+	rm -f *.o playdom.exe playdom player player.exe *.gcov *.gcda *.gcno *.so *.out testGainCard testGainCard.exe testDrawCard testDrawCard.exe badTestDrawCard badTestDrawCard.exe
+

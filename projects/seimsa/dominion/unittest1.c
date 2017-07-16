@@ -58,7 +58,7 @@ void assertTrue(int supplyPos, struct gameState *state, int player, int testType
 
 int main()
 {
-    int i, j, l, m, p, r, handCount;
+    int i, it, j, l, m, p, r, handCount;
     int seed = 500;
     int numPlayer = 2;
     int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
@@ -85,7 +85,13 @@ int main()
             r = initializeGame(numPlayer, k, seed, &G); //Initialize a new game
             //G.handCount[p] = handCount; //Set the number of cards on hand
             //memcpy(G.hand[p], adventurers, sizeof(int) * handCount); //Set all the cards to adventurer
-            
+            if(p > 0)
+            {
+                G.whoseTurn = p;
+                for (it = 0; it < 5; it++){
+                    drawCard(p, &G);
+                }
+            }
             printf("Test player %d with %d cards to add to the player's discard pile.\n", p, handCount);
             for(j = 1; j <= handCount; j++)
             {
@@ -123,7 +129,7 @@ void assertTrue(int supplyPos, struct gameState *state, int player, int testType
     {
         if(handCount != state->discardCount[player])
         {
-            printf("Discard count is incorrect for player %d!\n", player);
+            printf("Discard count is incorrect for player %d!\n\n", player);
             return;
         }
         
@@ -135,28 +141,29 @@ void assertTrue(int supplyPos, struct gameState *state, int player, int testType
         
         if(discardTest != 0)
         {
-            printf("Discard test failed for player %d!\n", player);
+            printf("Discard test failed for player %d!\n\n", player);
             return;
         }
         else
-            printf("Discard test passed for player %d!\n", player);
+            printf("Discard test passed for player %d!\n\n", player);
         
         if(state->supplyCount[supplyPos] != (10 - handCount))
-        {
-            printf("Supply count is incorrect for %d after player %d's turn!\n", supplyPos, player);
+      {
+            printf("Supply count is incorrect for %d after player %d's turn!\n\n", supplyPos, player);
             return;
         }
     }
     
     if(testType == 1)
     {
-        if(handCount != state->deckCount[player])
+        //printf("Deck count is %d \n", state->deckCount[player]);
+        if((handCount + 5) != state->deckCount[player])
         {
-            printf("Deck count is incorrect for player %d!\n", player);
+            printf("Deck count is incorrect for player %d!\n\n", player);
             return;
         }
         
-        for(i = 0; i < state->deckCount[player]; i++)
+        for(i = 5; i < state->deckCount[player]; i++)
         {
             if(state->deck[ player ][ i ] != supplyPos)
                 deckTest = 1;
@@ -164,28 +171,31 @@ void assertTrue(int supplyPos, struct gameState *state, int player, int testType
         
         if(deckTest != 0)
         {
-            printf("Deck test failed for player %d!\n", player);
+            printf("Deck test failed for player %d!\n\n", player);
             return;
         }
         else
-            printf("Deck test passed for player %d!\n", player);
+            printf("Deck test passed for player %d!\n\n", player);
         
         if(state->supplyCount[supplyPos] != (10 - handCount))
         {
-            printf("Supply count is incorrect for %d after player %d's turn!\n", supplyPos, player);
+            printf("Supply count is incorrect for %d after player %d's turn!\n\n", supplyPos, player);
             return;
         }
     }
     
     if(testType == 2)
     {
-        if(handCount != state->handCount[player])
+        //printf("Hand count is %d \n", state->handCount[player]);
+        if((handCount + 5) != state->handCount[player])
+        //if((handCount) != state->handCount[player])
         {
-            printf("Hand count is incorrect for player %d!\n", player);
+            printf("Hand count is incorrect for player %d!\n\n", player);
             return;
         }
         
-        for(i = 0; i < state->handCount[player]; i++)
+        for(i = 5; i < state->handCount[player]; i++)
+        //for(i = 0; i < state->handCount[player]; i++)
         {
             if(state->hand[ player ][ i ] != supplyPos)
                 handTest = 1;
@@ -193,15 +203,15 @@ void assertTrue(int supplyPos, struct gameState *state, int player, int testType
         
         if(handTest != 0)
         {
-            printf("Hand test failed for player %d!\n", player);
+            printf("Hand test failed for player %d!\n\n", player);
             return;
         }
         else
-            printf("Hand test passed for player %d!\n", player);
+            printf("Hand test passed for player %d!\n\n", player);
         
         if(state->supplyCount[supplyPos] != (10 - handCount))
         {
-            printf("Supply count is incorrect for %d after player %d's turn!\n", supplyPos, player);
+            printf("Supply count is incorrect for %d after player %d's turn!\n\n", supplyPos, player);
             return;
         }
     }
