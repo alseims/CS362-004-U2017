@@ -19,14 +19,17 @@ badTestDrawCard: badTestDrawCard.c dominion.o rngs.o
 testBuyCard: testDrawCard.c dominion.o rngs.o
 	$(CC) -o testDrawCard -g  testDrawCard.c dominion.o rngs.o $(CFLAGS)
 
+testGainCard: unittest1.c dominion.o rngs.o
+	$(CC) -o testGainCard -g unittest1.c dominion.o rngs.o $(CFLAGS)
+
 testAll: dominion.o testSuite.c
 	$(CC) -o testSuite testSuite.c -g  dominion.o rngs.o $(CFLAGS)
 
 interface.o: interface.h interface.c
 	$(CC) -c interface.c -g  $(CFLAGS)
 
-runtests: testDrawCard 
-	./testDrawCard &> unittestresult.out
+runtests: testGainCard 
+	./testGainCard &> unittestresult.out
 	gcov dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 

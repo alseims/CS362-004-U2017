@@ -6,7 +6,7 @@
 *
 * The following line is including in the makefile:
 * testGainCard: unittest1.c dominion.o rngs.o
-*       gcc -o testGainCard -g testGainCard.c dominion.o rngs.o $(CFLAGS)
+*       $(CC) -o testGainCard -g testGainCard.c dominion.o rngs.o $(CFLAGS)
 *
 *
 * int gainCard(int supplyPos, struct gameState *state, int toFlag, int player)
@@ -58,7 +58,7 @@ void assertTrue(int supplyPos, struct gameState *state, int player, int testType
 
 int main()
 {
-    int i, j, k, m, p, r, handCount;
+    int i, j, l, m, p, r, handCount;
     int seed = 500;
     int numPlayer = 2;
     int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
@@ -94,7 +94,7 @@ int main()
             assertTrue(adventurer, &G, p, 0, handCount);
             
             printf("Test player %d with %d cards to add to the player's deck.\n", p, handCount);
-            for(k = 1; k <= handCount; k++)
+            for(l = 1; l <= handCount; l++)
             {
                 gainCard(council_room, &G, 1, p);
             }
@@ -127,7 +127,7 @@ void assertTrue(int supplyPos, struct gameState *state, int player, int testType
             return;
         }
         
-        for(i = 0; i < state->discardCount[player])
+        for(i = 0; i < state->discardCount[player]; i++)
         {
             if(state->discard[ player ][ i ] != supplyPos)
                 discardTest = 1;
@@ -156,7 +156,7 @@ void assertTrue(int supplyPos, struct gameState *state, int player, int testType
             return;
         }
         
-        for(i = 0; i < state->deckCount[player])
+        for(i = 0; i < state->deckCount[player]; i++)
         {
             if(state->deck[ player ][ i ] != supplyPos)
                 deckTest = 1;
@@ -185,7 +185,7 @@ void assertTrue(int supplyPos, struct gameState *state, int player, int testType
             return;
         }
         
-        for(i = 0; i < state->handCount[player])
+        for(i = 0; i < state->handCount[player]; i++)
         {
             if(state->hand[ player ][ i ] != supplyPos)
                 handTest = 1;
