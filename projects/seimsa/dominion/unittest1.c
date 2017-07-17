@@ -6,7 +6,7 @@
 *
 * The following line is including in the makefile:
 * testGainCard: unittest1.c dominion.o rngs.o
-*       $(CC) -o testGainCard -g testGainCard.c dominion.o rngs.o $(CFLAGS)
+*       $(CC) -o testGainCard -g unittest1.c dominion.o rngs.o $(CFLAGS)
 *
 *
 * int gainCard(int supplyPos, struct gameState *state, int toFlag, int player)
@@ -59,7 +59,7 @@ void assertTrue(int supplyPos, struct gameState *state, int player, int testType
 int main()
 {
     int i, it, j, l, m, p, r, handCount;
-    int seed = 500;
+    int seed = 1000;
     int numPlayer = 2;
     int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
     struct gameState G;
@@ -75,8 +75,7 @@ int main()
         council_rooms[i] = council_room;
         feasts[i] = feast;
     }
-    
-    printf("TESTING gainCard():\n");
+
     for(p = 0; p < numPlayer; p++)
     {
         for(handCount = 1; handCount <= maxHandCount; handCount++)
@@ -116,6 +115,7 @@ int main()
         }
     }
     
+    return 0;
 }
 
 void assertTrue(int supplyPos, struct gameState *state, int player, int testType, int handCount)

@@ -22,22 +22,37 @@ testBuyCard: testDrawCard.c dominion.o rngs.o
 testGainCard: unittest1.c dominion.o rngs.o
 	$(CC) -o testGainCard -g unittest1.c dominion.o rngs.o $(CFLAGS)
 
+testSmithyCard: cardtest1.c dominion.o rngs.o
+	$(CC) -o testSmithyCard -g cardtest1.c dominion.o rngs.o $(CFLAGS)
+
+testAdventurerCard: cardtest2.c dominion.o rngs.o
+	$(CC) -o testAdventurerCard -g cardtest2.c dominion.o rngs.o $(CFLAGS)
+
+testCutpurseCard: cardtest3.c dominion.o rngs.o
+	$(CC) -o testCutpurseCard -g cardtest3.c dominion.o rngs.o $(CFLAGS)
+
+testSea_HagCard: cardtest4.c dominion.o rngs.o
+	$(CC) -o testSea_HagCard -g cardtest4.c dominion.o rngs.o $(CFLAGS)
+
 testAll: dominion.o testSuite.c
 	$(CC) -o testSuite testSuite.c -g  dominion.o rngs.o $(CFLAGS)
 
 interface.o: interface.h interface.c
 	$(CC) -c interface.c -g  $(CFLAGS)
 
-runtests: testGainCard 
-	./testGainCard &> unittestresult.out
+runtests: 
+	./testGainCard >> unittestresult.out
+	./testSmithyCard >> unittestresult.out
+	./testAdventurerCard >> unittestresult.out
+	./testCutpurseCard >> unittestresult.out
+	./testSea_HagCard >> unittestresult.out
 	gcov-7.1 -b -c  dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
 player: player.c interface.o
 	$(CC) -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom player testDrawCard testBuyCard badTestDrawCard testGainCard
+all: playdom player testGainCard testSmithyCard testAdventurerCard testCutpurseCard testSea_HagCard 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe *.gcov *.gcda *.gcno *.so *.out testGainCard testGainCard.exe testDrawCard testDrawCard.exe badTestDrawCard badTestDrawCard.exe
-
+	rm -f *.o playdom.exe playdom player player.exe *.gcov *.gcda *.gcno *.so *.out testGainCard testGainCard.exe testSmithyCard testSmithyCard.exe testAdventurerCard testAdventurerCard.exe testCutpurseCard testCutpurseCard.exe testSea_HagCard testSea_HagCard.exe
