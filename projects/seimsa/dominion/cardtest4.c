@@ -102,8 +102,8 @@ void assertTrue(struct gameState *state, struct gameState *testState, int player
     int cards;
     if(testType == 0)
     {
-        printf("Hand count = %d, Expected = %d\n", testState->handCount[player], state->handCount[player] + newCards - discarded);
-        if(testState->handCount[player] != (state->handCount[player] + newCards - discarded))
+        printf("Hand count = %d, Expected = %d\n", testState->handCount[player], state->handCount[player]);
+        if(testState->handCount[player] != state->handCount[player])
         {
             printf("Hand count is incorrect for player %d.\n", player);
             handTest = 1;
@@ -119,8 +119,8 @@ void assertTrue(struct gameState *state, struct gameState *testState, int player
     
     if(testType == 1)
     {
-        printf("Deck count = %d, Expected = %d\n", testState->deckCount[player], state->deckCount[player] - newCards + shuffleCards);
-        if(testState->deckCount[player] != (state->deckCount[player] - newCards + shuffleCards))
+        printf("Deck count = %d, Expected = %d\n", testState->deckCount[player], state->deckCount[player]);
+        if(testState->deckCount[player] != state->deckCount[player])
         {
             printf("Deck count is incorrect for player %d.\n", player);
             deckTest = 1;

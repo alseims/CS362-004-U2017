@@ -75,7 +75,7 @@ int main()
         council_rooms[i] = council_room;
         feasts[i] = feast;
     }
-
+    printf("--------------------TESTING GAINCARD()---------------------\n");
     for(p = 0; p < numPlayer; p++)
     {
         for(handCount = 1; handCount <= maxHandCount; handCount++)

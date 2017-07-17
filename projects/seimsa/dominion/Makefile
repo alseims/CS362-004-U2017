@@ -22,6 +22,9 @@ testBuyCard: testDrawCard.c dominion.o rngs.o
 testGainCard: unittest1.c dominion.o rngs.o
 	$(CC) -o testGainCard -g unittest1.c dominion.o rngs.o $(CFLAGS)
 
+testDiscardCard: unittest2.c dominion.o rngs.o
+	$(CC) -o testDiscardCard -g unittest2.c dominion.o rngs.o $(CFLAGS)
+
 testSmithyCard: cardtest1.c dominion.o rngs.o
 	$(CC) -o testSmithyCard -g cardtest1.c dominion.o rngs.o $(CFLAGS)
 
@@ -42,6 +45,7 @@ interface.o: interface.h interface.c
 
 runtests: 
 	./testGainCard >> unittestresult.out
+	./testDiscardCard >> unittestresult.out
 	./testSmithyCard >> unittestresult.out
 	./testAdventurerCard >> unittestresult.out
 	./testCutpurseCard >> unittestresult.out
@@ -52,7 +56,7 @@ runtests:
 player: player.c interface.o
 	$(CC) -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom player testGainCard testSmithyCard testAdventurerCard testCutpurseCard testSea_HagCard 
+all: playdom player testGainCard testDiscardCard testSmithyCard testAdventurerCard testCutpurseCard testSea_HagCard 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe *.gcov *.gcda *.gcno *.so *.out testGainCard testGainCard.exe testSmithyCard testSmithyCard.exe testAdventurerCard testAdventurerCard.exe testCutpurseCard testCutpurseCard.exe testSea_HagCard testSea_HagCard.exe
+	rm -f *.o playdom.exe playdom player player.exe *.gcov *.gcda *.gcno *.so *.out testGainCard testGainCard.exe testDiscardCard testDiscardCard.exe testSmithyCard testSmithyCard.exe testAdventurerCard testAdventurerCard.exe testCutpurseCard testCutpurseCard.exe testSea_HagCard testSea_HagCard.exe
