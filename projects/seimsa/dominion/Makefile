@@ -28,8 +28,14 @@ testDiscardCard: unittest2.c dominion.o rngs.o
 testSmithyCard: cardtest1.c dominion.o rngs.o
 	$(CC) -o testSmithyCard -g cardtest1.c dominion.o rngs.o $(CFLAGS)
 
+testSmithyCard_R: randomtestcard1.c dominion.o rngs.o
+	$(CC) -o testSmithyCard_R -g randomtestcard1.c dominion.o rngs.o $(CFLAGS)
+
 testAdventurerCard: cardtest2.c dominion.o rngs.o
 	$(CC) -o testAdventurerCard -g cardtest2.c dominion.o rngs.o $(CFLAGS)
+
+testAdventurerCard_R: randomtestadventurer.c dominion.o rngs.o
+	$(CC) -o testAdventurerCard_R -g randomtestadventurer.c dominion.o rngs.o $(CFLAGS)
 
 testCutpurseCard: cardtest3.c dominion.o rngs.o
 	$(CC) -o testCutpurseCard -g cardtest3.c dominion.o rngs.o $(CFLAGS)
@@ -53,10 +59,16 @@ runtests:
 	gcov-7.1 -b -c  dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
+runtests2: 
+	./testSmithyCard_R >> unittestresult.out
+	./testAdventurerCard_R >> unittestresult.out
+	gcov-7.1 -b -c  dominion.c >> unittestresult.out
+	cat dominion.c.gcov >> unittestresult.out
+
 player: player.c interface.o
 	$(CC) -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom player testGainCard testDiscardCard testSmithyCard testAdventurerCard testCutpurseCard testSea_HagCard 
+all: playdom player testGainCard testDiscardCard testSmithyCard testSmithyCard_R testAdventurerCard testAdventurerCard_R testCutpurseCard testSea_HagCard 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe *.gcov *.gcda *.gcno *.so *.out testGainCard testGainCard.exe testDiscardCard testDiscardCard.exe testSmithyCard testSmithyCard.exe testAdventurerCard testAdventurerCard.exe testCutpurseCard testCutpurseCard.exe testSea_HagCard testSea_HagCard.exe
+	rm -f *.o playdom.exe playdom player player.exe *.gcov *.gcda *.gcno *.so *.out testGainCard testGainCard.exe testDiscardCard testDiscardCard.exe testSmithyCard testSmithyCard.exe testAdventurerCard testAdventurerCard.exe testCutpurseCard testCutpurseCard.exe testSea_HagCard testSea_HagCard.exe testSmithyCard_R testSmithyCard_R.exe
