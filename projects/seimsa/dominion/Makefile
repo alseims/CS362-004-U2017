@@ -62,12 +62,20 @@ runtests:
 	gcov-7.1 -b -c  dominion.c >> unittestresult.out
 	cat dominion.c.gcov >> unittestresult.out
 
-runtests2: 
-	./testSmithyCard_R >> unittestresult.out
-	./testAdventurerCard_R >> unittestresult.out
-	./testCutpurseCard_R >> unittestresult.out
-	gcov-7.1 -b -c  dominion.c >> unittestresult.out
-	cat dominion.c.gcov >> unittestresult.out
+runtest1: 
+	./testSmithyCard_R >> randomtestcard1.out
+	gcov-7.1 -b -c  dominion.c >> randomtestcard1.out
+	cat dominion.c.gcov >> randomtestcard1.out
+
+runtest2: 
+	./testAdventurerCard_R >> randomtestadventurer.out
+	gcov-7.1 -b -c  dominion.c >> randomtestadventurer.out
+	cat dominion.c.gcov >> randomtestadventurer.out
+
+runtest3: 
+	./testCutpurseCard_R >> randomtestcard2.out
+	gcov-7.1 -b -c  dominion.c >> randomtestcard2.out
+	cat dominion.c.gcov >> randomtestcard2.out
 
 player: player.c interface.o
 	$(CC) -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)

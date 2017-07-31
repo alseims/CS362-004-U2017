@@ -198,7 +198,7 @@ int checkCutpurseCard(int player, struct gameState *post, int handPos)
     
     
     if(r == 0)
-        printf("TEST PASSED: Adventurer card played\n");
+        printf("TEST PASSED: Cutpurse card played\n");
     printf("----TEST RESULTS----\n");
     printf("----PRE--------POST----\n");
     //printf("Hand Pos: %d\n", handPos);
