@@ -690,7 +690,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 	state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
 	z=z-1;
       }*/
-      playAdventurer(handPos, currentPlayer, state, temphand);
+      playAdventurer(currentPlayer, state, temphand);
       return 0;
 			
     case council_room:
@@ -1355,9 +1355,9 @@ void playSmithy(int handPos, int currentPlayer, struct gameState *state)
     return;
 }
 
-void playAdventurer(int handPos, int currentPlayer, struct gameState *state, int *temphand)
+void playAdventurer(int currentPlayer, struct gameState *state, int *temphand)
 {
-    int drawntreasure=0;
+    int drawntreasure=1;
     int z = 0;// this is the counter for the temp hand
     int cardDrawn;
     
@@ -1367,7 +1367,7 @@ void playAdventurer(int handPos, int currentPlayer, struct gameState *state, int
         }
         drawCard(currentPlayer, state);
         cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
-        if (cardDrawn == copper || cardDrawn == silver || cardDrawn == gold)
+        if (cardDrawn == copper || cardDrawn == silver)
             drawntreasure++;
         else{
             temphand[z]=cardDrawn;
@@ -1377,11 +1377,9 @@ void playAdventurer(int handPos, int currentPlayer, struct gameState *state, int
     }
     while(z-1>=0){
         state->discard[currentPlayer][state->discardCount[currentPlayer]++]=temphand[z-1]; // discard all cards in play that have been drawn
-        z=z-1;
+        z=z-2;
     }
-    
-    //discard card from hand
-    discardCard(handPos, currentPlayer, state, 0);
+
     return;
 }
 
@@ -1453,10 +1451,10 @@ void playCutpurse(int currentPlayer, struct gameState *state, int handPos)
             {
                 if (state->hand[i][j] == copper)
                 {
-                    discardCard(i, j, state, 0);
+                    discardCard(j, i, state, 0);
                     break;
                 }
-                if (j == state->handCount[i])
+                /*if (j == state->handCount[i])
                 {
                     for (k = 0; k < state->handCount[i]; k++)
                     {
@@ -1464,7 +1462,7 @@ void playCutpurse(int currentPlayer, struct gameState *state, int handPos)
                             printf("Player %d reveals card number %d\n", i, state->hand[i][k]);
                     }
                     break;
-                }
+                }*/
             }
             
         }

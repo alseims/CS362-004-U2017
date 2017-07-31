@@ -23,8 +23,9 @@ int main()
     SelectStream(2);
     PutSeed(4);
     
-    for(n = 0; n < 3; n++)
+    for(n = 0; n < 2000; n++)
     {
+        printf("Test %d\n", n);
         for(i = 0; i < sizeof(struct gameState); i++)
         {
             ((char*)&G)[i] = floor(Random() * 256);
@@ -32,8 +33,8 @@ int main()
         
         p = floor(Random() * 2);
         G.whoseTurn = p;
-        //G.deckCount[p] = floor(Random() * MAX_DECK);
-        G.deckCount[p] = 2;
+        G.deckCount[p] = floor(Random() * MAX_DECK);
+        //G.deckCount[p] = 2;
         for(j = 0; j < G.deckCount[p]; j++)
         {
             if((abs(G.deck[p][j]) % 6) == 0)
@@ -110,6 +111,7 @@ int checkAdventurerCard(int player, struct gameState *post, int handPos)
     //No shuffle needed.
     if(!shuffleNeeded)
     {
+        printf("No Shuffle\n");
         //Draw cards from the deck until two treasure cards have been drawn.
         while(drawntreasure < 2)
         {
@@ -171,6 +173,7 @@ int checkAdventurerCard(int player, struct gameState *post, int handPos)
     //Shuffle is needed. Copy over the deck and discard piles from post to pre to avoid having to shuffle manually.
     else if(shuffleNeeded)
     {
+        printf("****************************************************Shuffle*************************************************\n");
         memcpy(pre.deck[player], post->deck[player], sizeof(int) * pre.discardCount[player]);
         memcpy(pre.discard[player], post->discard[player], sizeof(int)*pre.discardCount[player]);
         
@@ -179,9 +182,9 @@ int checkAdventurerCard(int player, struct gameState *post, int handPos)
         pre.playedCardCount++;
         
         //Copy the drawn treasure cards from post to pre.
-        if(post->hand[player][handPos] == copper || post->hand[player][handPos] == silver || post->hand[player][handPos] == gold)
+        //if(post->hand[player][handPos] == copper || post->hand[player][handPos] == silver || post->hand[player][handPos] == gold)
             pre.hand[player][handPos] = post->hand[player][handPos];
-        pre.hand[player][pre.handCount[player]] = post->hand[player][post->handCount[player]];
+        pre.hand[player][pre.handCount[player]] = post->hand[player][post->handCount[player] - 1];
         pre.handCount[player]++;
         
         //Get post hand count and use as a counter.
@@ -195,8 +198,8 @@ int checkAdventurerCard(int player, struct gameState *post, int handPos)
         }*/
         
         
-        //pre.deckCount[player] = post->deckCount[player];
-        //  pre.discardCount[player] = post->deckCount[player];
+        pre.deckCount[player] = post->deckCount[player];
+        pre.discardCount[player] = post->discardCount[player];
     }
     
     
