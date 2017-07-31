@@ -1,3 +1,344 @@
+--------------------TESTING GAINCARD()---------------------
+Test player 0 with 1 cards to add to the player's discard pile.
+Discard test passed for player 0!
+
+Test player 0 with 1 cards to add to the player's deck.
+Deck test passed for player 0!
+
+Test player 0 with 1 cards to add to the player's hand.
+Hand test passed for player 0!
+
+Test player 0 with 2 cards to add to the player's discard pile.
+Discard test passed for player 0!
+
+Test player 0 with 2 cards to add to the player's deck.
+Deck test passed for player 0!
+
+Test player 0 with 2 cards to add to the player's hand.
+Hand test passed for player 0!
+
+Test player 0 with 3 cards to add to the player's discard pile.
+Discard test passed for player 0!
+
+Test player 0 with 3 cards to add to the player's deck.
+Deck test passed for player 0!
+
+Test player 0 with 3 cards to add to the player's hand.
+Hand test passed for player 0!
+
+Test player 0 with 4 cards to add to the player's discard pile.
+Discard test passed for player 0!
+
+Test player 0 with 4 cards to add to the player's deck.
+Deck test passed for player 0!
+
+Test player 0 with 4 cards to add to the player's hand.
+Hand test passed for player 0!
+
+Test player 0 with 5 cards to add to the player's discard pile.
+Discard test passed for player 0!
+
+Test player 0 with 5 cards to add to the player's deck.
+Deck test passed for player 0!
+
+Test player 0 with 5 cards to add to the player's hand.
+Hand test passed for player 0!
+
+Test player 1 with 1 cards to add to the player's discard pile.
+Discard test passed for player 1!
+
+Test player 1 with 1 cards to add to the player's deck.
+Deck test passed for player 1!
+
+Test player 1 with 1 cards to add to the player's hand.
+Hand test passed for player 1!
+
+Test player 1 with 2 cards to add to the player's discard pile.
+Discard test passed for player 1!
+
+Test player 1 with 2 cards to add to the player's deck.
+Deck test passed for player 1!
+
+Test player 1 with 2 cards to add to the player's hand.
+Hand test passed for player 1!
+
+Test player 1 with 3 cards to add to the player's discard pile.
+Discard test passed for player 1!
+
+Test player 1 with 3 cards to add to the player's deck.
+Deck test passed for player 1!
+
+Test player 1 with 3 cards to add to the player's hand.
+Hand test passed for player 1!
+
+Test player 1 with 4 cards to add to the player's discard pile.
+Discard test passed for player 1!
+
+Test player 1 with 4 cards to add to the player's deck.
+Deck test passed for player 1!
+
+Test player 1 with 4 cards to add to the player's hand.
+Hand test passed for player 1!
+
+Test player 1 with 5 cards to add to the player's discard pile.
+Discard test passed for player 1!
+
+Test player 1 with 5 cards to add to the player's deck.
+Deck test passed for player 1!
+
+Test player 1 with 5 cards to add to the player's hand.
+Hand test passed for player 1!
+
+-------------------TESTING DISCARDCARD()---------------------
+
+Test player 0 with 1 cards to discard.
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+Test player 0 with 2 cards to discard.
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+Test player 0 with 3 cards to discard.
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+Test player 0 with 4 cards to discard.
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+Test player 0 with 5 cards to discard.
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+state->hand[player][handPos]: -1, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 0!
+
+Test player 1 with 1 cards to discard.
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+Test player 1 with 2 cards to discard.
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+Test player 1 with 3 cards to discard.
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+Test player 1 with 4 cards to discard.
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+Test player 1 with 5 cards to discard.
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+state->hand[player][handPos]: 4, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+state->hand[player][handPos]: -1, state->playedCards[state->playedCardCount]: 387389207
+Test failed!! Discard card did not get added to played pile for player 1!
+
+------------------------------TESTING Card: Smithy -----------------------------------
+TEST: Player gains +3 cards
+Hand count = 6, Expected = 7
+Hand count is incorrect for player 0.
+Hand count test failed for player 0!
+
+Deck count = 3, Expected = 2
+Deck count is incorrect for player 0.
+Deck count test failed for player 0!
+
+Coins = 4, Expected = 4
+Coin count test passed for player 0!
+
+**Checking the state of player 1 to ensure the Smithy card played by player 0 did not change other player's state.**
+
+Hand count = 0, Expected = 0
+Hand count test passed for player 1!
+
+Deck count = 10, Expected = 10
+Deck count test passed for player 1!
+
+Coins = 4, Expected = 4
+Coin count test passed for player 1!
+
+Checking that Kingdom and Victory cards counts did not change due to Smithy card being played.
+Kingdom and Victory card test passed!
+
+--------------------------------------------------------------------------------
+
+------------------------------TESTING Card: Adventurer -----------------------------------
+TEST1: Player's deck is not empty.
+
+Hand count = 6, Expected = 6
+Hand count test passed for player 0!
+
+Deck count = 4, Expected = 3
+Deck count is incorrect for player 0.
+Deck count test failed for player 0!
+
+Coins = 4, Expected = 4
+Coin count test passed for player 0!
+
+**Checking the state of player 1 to ensure the Adventurer card played by player 0 did not change other player's state.**
+
+Hand count = 0, Expected = 0
+Hand count test passed for player 1!
+
+Deck count = 10, Expected = 10
+Deck count test passed for player 1!
+
+Coins = 4, Expected = 4
+Coin count test passed for player 1!
+
+Checking that Kingdom and Victory cards counts did not change due to Smithy card being played.
+Kingdom and Victory card test passed!
+
+TEST2: Player's deck is empty and must be shuffled before drawing cards.
+
+deck count: 0
+Shuffle error
+Hand count = 5, Expected = 7
+Hand count is incorrect for player 0.
+Hand count test failed for player 0!
+
+Coins = 4, Expected = 4
+Coin count test passed for player 0!
+
+**Checking the state of player 1 to ensure the Smithy card played by player 0 did not change other player's state.**
+
+Hand count = 0, Expected = 0
+Hand count test passed for player 1!
+
+Deck count = 10, Expected = 10
+Deck count test passed for player 1!
+
+Coins = 4, Expected = 4
+Coin count test passed for player 1!
+
+Checking that Kingdom and Victory cards counts did not change due to Smithy card being played.
+Kingdom and Victory card test passed!
+
+--------------------------------------------------------------------------------
+
+------------------------------TESTING Card: Cutpurse -----------------------------------
+TEST1: Player gains +2 coins and all other players discard the coppers in there hands.
+Hand count = 4, Expected = 4
+Hand count test passed for player 0!
+
+Deck count = 5, Expected = 5
+Deck count test passed for player 0!
+
+Coins = 7, Expected = 6
+Coin count is incorrect for player 0.
+Coin count test failed for player 0!
+
+**Checking the state of player 1 to see if the Cutpurse card played by player 0 changed the other players' state.**
+
+Hand count = 0, Expected = -1
+Hand count is incorrect for player 1.
+Hand count test failed for player 1!
+
+Deck count = 10, Expected = 10
+Deck count test passed for player 1!
+
+Coins = 7, Expected = 4
+Coin count is incorrect for player 1.
+Coin count test failed for player 1!
+
+Checking that Kingdom and Victory cards counts did not change due to Smithy card being played.
+Kingdom and Victory card test passed!
+
+--------------------------------------------------------------------------------
+
+------------------------------TESTING Card: Sea Hag -----------------------------------
+TEST: Each other player discards the top card from their deck and gains a curse card. The curse card is placed on top of the deck.
+Hand count = 5, Expected = 5
+Hand count test passed for player 0!
+
+Deck count = 5, Expected = 5
+Deck count test passed for player 0!
+
+Coins = 4, Expected = 4
+Coin count test passed for player 0!
+
+**Checking the state of player 1 to ensure the Sea Hag card played by player 0 changed the other players' state.**
+
+Hand count = 0, Expected = 0
+Hand count test passed for player 1!
+
+Deck count = 7, Expected = 10
+Deck count is incorrect for player 1.
+Deck count test failed for player 1!
+
+Coins = 4, Expected = 4
+Coin count test passed for player 1!
+
+Checking that Kingdom and Victory cards counts did not change due to Smithy card being played.
+Kingdom and Victory card test passed!
+
+--------------------------------------------------------------------------------
+
+File 'dominion.c'
+Lines executed:33.17% of 612
+Branches executed:32.69% of 413
+Taken at least once:24.70% of 413
+Calls executed:23.96% of 96
+Creating 'dominion.c.gcov'
+
         -:    0:Source:dominion.c
         -:    0:Graph:dominion.gcno
         -:    0:Data:dominion.gcda

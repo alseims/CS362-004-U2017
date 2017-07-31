@@ -1358,12 +1358,14 @@ void playSmithy(int handPos, int currentPlayer, struct gameState *state)
 void playAdventurer(int currentPlayer, struct gameState *state, int *temphand)
 {
     int drawntreasure=1;
-    int z = 0;// this is the counter for the temp hand
+    int z = 0, shuffRet;// this is the counter for the temp hand
     int cardDrawn;
     
     while(drawntreasure<2){
         if (state->deckCount[currentPlayer] <1){//if the deck is empty we need to shuffle discard and add to deck
-            shuffle(currentPlayer, state);
+            shuffRet = shuffle(currentPlayer, state);
+            if(shuffRet == -1)
+                printf("Shuffle error\n");
         }
         drawCard(currentPlayer, state);
         cardDrawn = state->hand[currentPlayer][state->handCount[currentPlayer]-1];//top card of hand is most recently drawn card.
