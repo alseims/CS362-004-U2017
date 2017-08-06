@@ -1,0 +1,31 @@
+Alan Seims
+CS 362
+Assignment 5 — Bug Report
+
+
+
+Bug 1:
+
+This bug is found in the playSmithy( ). The card is supposed to allow the player to draw three cards. This function allows the player to draw four cards. This is due to the ‘for’ loop. The code snippet follows. The bug is in the condition portion of the for loop. It should read i < 3 since i starts at zero. 
+
+
+//+3 Cards
+  for (i = 0; i <= 3; i++) {
+    drawCard(currentPlayer, state);
+  }
+
+
+
+
+
+
+*****************************************************************************************************************************
+
+Bug 2:
+
+This bug is found in the playAdventurer( ). The Adventurer card never gets discarded from the player’s hand. In the playSmithy( ), for example, the function contains the following code snippet to discard the Smithy card from the player’s hand. 
+
+//discard card from hand
+  discardCard(handPos, currentPlayer, state, 0);
+
+This code snippet is not found in the playAdventurer( ). The bug causes the function to create errors in the hand, hand count, and played card count. 

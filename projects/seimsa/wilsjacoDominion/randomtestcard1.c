@@ -1,135 +1,359 @@
-/*
-* Name: Jacob Wilson
-* Course: CS362_400 Summer 2017
-* Description: Random test for Smithy card. The program loops through a number
-*  of random test scenarios. It determines how many tests failed or passed,
-*  which tests failed, and prints out the results.
-* References: the testDrawCard.c file as provided by the instructor
-*  was used as a template.
-*/
-
+//Smithy
 #include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include <assert.h>
+#include <math.h>
 #include "rngs.h"
-#include <stdlib.h>
 
-/*
-* Name: checkSmithyCard()
-* Input: four integers and gamestate struct
-* Output: one integer
-* Description: The function contains two gamestates that it uses to
-*  check that various conditions are equal. It counts up the number
-*  of tests that have failed, and returns that value to main.
-*/
-int checkSmithyCard(int p, struct gameState *post, int *test1, int *test2, int *test3) {
-	// variables for tracking values
-	struct gameState pre;
-	int testStatus = 0;
-	int handBefore, handAfter, deckBefore, deckAfter;
-	int r;
+int checkSmithyCard(int handPos, int player, struct gameState *post);
 
-	// copy the previous gamestate
-	memcpy(&pre, post, sizeof(struct gameState));
 
-	// call the function in test
-	r = cardEffect(smithy, 0, 0, 0, post, 0, 0);
+int main()
+{
+    int i, n, r, p, handPos;
+    int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+    
+    struct gameState G;
+    
+    printf("Testing Smithy Card.\n");
+    printf("RANDOM TESTS.\n");
+    
+    SelectStream(2);
+    PutSeed(4);
 
-	// assign before and after variables
-	handBefore = pre.handCount[p];
-	deckBefore = pre.deckCount[p];
-	handAfter = post->handCount[p];
-	deckAfter = post->deckCount[p];
-
-	// TEST 1: two cards have been added to the hand
-	if ((handBefore + 2) != handAfter) {
-		testStatus += 1;
-		*test1 = 1;
-	}
-
-	// TEST 2: three cards have been removed from the deck
-	if ((deckBefore - 3) != deckAfter) {
-		testStatus += 1;
-		*test2 = 1;
-	}
-
-	// TEST 3: the function properly returned a value
-	if (r != 0) {
-		testStatus += 1;
-		*test3 = 0;
-	}
-
-	return testStatus;
+    for(n = 0; n < 2000; n++)
+    {
+        for(i = 0; i < sizeof(struct gameState); i++)
+        {
+            ((char*)&G)[i] = floor(Random() * 256);
+        }
+        
+        p = floor(Random() * 2);
+        G.whoseTurn = p;
+        G.deckCount[p] = floor(Random() * MAX_DECK);
+        G.discardCount[p] = floor(Random() * MAX_DECK);
+        G.handCount[p] = floor(Random() * MAX_HAND);
+        handPos = floor(Random() * G.handCount[p]);
+        G.hand[p][handPos] = smithy;
+        G.playedCardCount = floor(Random() * MAX_DECK);
+        checkSmithyCard(handPos, p, &G);
+    }
 }
 
-int main() {
-	// variables for setting up game
-	int numPlayers;
-	int currentPlayer = 0;
-	int r = 0;
-	int h, i, j;
-	struct gameState testGame;
 
-	// variables for tracking test results
-	int testFailed = 0;
-	int numTestsFailed = 0;
-	int test1 = 0;
-	int test2 = 0;
-	int test3 = 0;
+int checkSmithyCard(int handPos, int player,  struct gameState *post)
+{
+    int choice1 = 0, choice2 = 0, choice3 = 0;
+    int bonus = 0, i, r;
+    int handCounter, compareReturn, flag = 0, passedTestCounter = 0;
+    struct gameState pre;
+    
+    //post->deckCount[player] = 2;
+    memcpy(&pre, post, sizeof(struct gameState));
+    
+    r = cardEffect(smithy, choice1, choice2, choice3, post, handPos, &bonus);
+    
+    //No shuffle needed if deck count is 3 or greater.
+    if(pre.deckCount[player] >= 3)
+    {
+        //Get hand count before cards are drawn and use as a counter.
+        handCounter = pre.handCount[player];
+        
+        //Draw three cards from the deck.
+        for(i = handCounter; i < (handCounter + 3) ; i++)
+        {
+            pre.hand[player][i] = pre.deck[player][pre.deckCount[player] - 1];
+            pre.deckCount[player]--;
+            pre.handCount[player]++;
+        }
+    
+        //Put Smithy card onto the played cards pile.
+        pre.playedCards[pre.playedCardCount] = pre.hand[player][handPos];
+        pre.playedCardCount++;
+        
+        //Set the hand position that contained the Smithy card to -1
+        pre.hand[player][handPos] = -1;
+        
+        if ( handPos == (pre.handCount[player] - 1) ) 	//last card in hand array is played
+        {
+            //reduce number of cards in hand
+            pre.handCount[player]--;
+        }
+        else if ( pre.handCount[player] == 1 ) //only one card in hand
+        {
+            //reduce number of cards in hand
+            pre.handCount[player]--;
+        }
+        else
+        {
+            //replace discarded card with last card in hand
+            pre.hand[player][handPos] = pre.hand[player][(pre.handCount[player] - 1)];
+            //set last card to -1
+            pre.hand[player][pre.handCount[player] - 1] = -1;
+            //reduce number of cards in hand
+            pre.handCount[player]--;
+        }
+    }
+    //Shuffle is needed. Ensure that the discard count is 3 or greater. Copy over the deck and discard
+    //piles to avoid having to shuffle manually.
+    else if(pre.discardCount[player] >= 3)
+    {
+        memcpy(pre.deck[player], post->deck[player], sizeof(int) * pre.discardCount[player]);
+        memcpy(pre.discard[player], post->discard[player], sizeof(int)*pre.discardCount[player]);
+        
+        //Put Smithy card onto the played cards pile.
+        pre.playedCards[pre.playedCardCount] = pre.hand[player][handPos];
+        pre.playedCardCount++;
+        
+        //Copy the drawn card, from post, that was put into the Smithy card's hand position.
+        pre.hand[player][handPos] = post->hand[player][handPos];
+        
+        //Get post hand count and use as a counter.
+        handCounter = post->handCount[player];
+        
+        //Copy the last two remaing drawn cards from post hand to
+        for(i = handCounter - 1; i >= (handCounter - 2); i--)
+        {
+            pre.hand[player][i] = post->hand[player][i];
+            pre.handCount[player]++;
+        }
+        
+        
+        pre.deckCount[player] = pre.discardCount[player] - 1;
+        pre.discardCount[player] = 0;
+    }
+    
+    
 
-	printf("-------- RANDOM Testing Smithy Card--------\n");
-
-	// set up random generator
-	SelectStream(2);
-	PutSeed(3);
-
-	// loop through multiple random test cases
-	for (i = 0; i < 2000; i++) {
-		// copy random values into struct (taken from example file)
-		for (j = 0; j < sizeof(struct gameState); j++) {
-			((char*)&testGame)[j] = floor(Random() * 256);
-		}
-
-		// set up random reasonable values
-		testGame.whoseTurn = currentPlayer;
-		testGame.deckCount[currentPlayer] = floor(Random() * MAX_DECK);
-		testGame.discardCount[currentPlayer] = floor(Random() * MAX_DECK);
-		testGame.handCount[currentPlayer] = floor(Random() * MAX_HAND);
-		testGame.playedCardCount = floor(Random() * (MAX_DECK - 1));
-
-		// run the test
-		r = checkSmithyCard(currentPlayer, &testGame, &test1, &test2, &test3);
-
-		// keep track of the total number of tests failed
-		if (r > 0) {
-			testFailed = 1;
-			for (h = 0; h < r; h++) {
-				numTestsFailed++;
-			}
-			r = 0;
-		}
-	}
-
-	// print results
-	if (testFailed) {
-		printf("Smithy Result: FAILED TESTS\n");
-		printf("Number of tests failed: %d out of %d\n", numTestsFailed, (i * 3));
-		printf("Failing tests:\n");
-		if (test1 == 1) {
-			printf("- incorrect number of cards in hand\n");
-		}
-		if (test2 == 1) {
-			printf("- incorrect number of cards in deck\n");
-		}
-		if (test3 == 1) {
-			printf("- incorrect function return value\n");
-		}
-		printf("\n");
-	} else {
-		printf("Smithy Result: PASSED ALL TESTS!!\n\n");
-	}
-
-	return 0;
+    
+    if(r == 0)
+        printf("TEST PASSED: Smithy card played\n");
+    printf("----TEST RESULTS----\n");
+    
+    if(pre.numPlayers != post->numPlayers)
+    {
+        printf("Num players: %d                %d\n", pre.numPlayers, post->numPlayers);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("NUMPLAYERS TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    for(i = 0; i <= treasure_map; i++)
+    {
+        if(pre.supplyCount[i] != post->supplyCount[i])
+        {
+            printf("SuppC[%d]:  %d                %d\n", i, pre.supplyCount[i], post->supplyCount[i]);
+            flag = 1;
+        }
+    }
+    if(flag == 1)
+        printf("SUPPLYCOUNTS TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    for(i = 0; i <= treasure_map; i++)
+    {
+        if(pre.embargoTokens[i] != post->embargoTokens[i])
+        {
+            printf("ET[%d]:  %d                %d\n", i, pre.embargoTokens[i], post->embargoTokens[i]);
+            flag = 1;
+        }
+    }
+    if(flag == 1)
+        printf("EMBARGOTOKENS TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.outpostPlayed != post->outpostPlayed)
+    {
+        printf("Outpost Played:     %d                %d\n", pre.outpostPlayed, post->outpostPlayed);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("OUTPOST PLAYED TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.outpostTurn != post->outpostTurn)
+    {
+        printf("Outpost Turn:     %d                %d\n", pre.outpostTurn, post->outpostTurn);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("OUTPOST TURN TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.whoseTurn != post->whoseTurn)
+    {
+        printf("Whose Turn:     %d                %d\n", pre.whoseTurn, post->whoseTurn);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("WHOSE TURN TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.phase != post->phase)
+    {
+        printf("Phase:     %d                %d\n", pre.phase, post->phase);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("PHASE TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.numActions != post->numActions)
+    {
+        printf("Num Actions:     %d                %d\n", pre.numActions, post->numActions);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("NUM ACTIONS TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.coins != post->coins)
+    {
+        printf("Coins:     %d                %d\n", pre.coins, post->coins);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("COINS TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.numBuys != post->numBuys)
+    {
+        printf("Num Buys:     %d                %d\n", pre.numBuys, post->numBuys);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("NUM BUYS TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    for(i = 0; i < post->handCount[player]; i++)
+    {
+        if(pre.hand[player][i] != post->hand[player][i])
+        {
+            printf("Hand[%d]:  %d                %d\n", i, pre.hand[player][i], post->hand[player][i]);
+            flag = 1;
+        }
+    }
+    if(flag == 1)
+        printf("HAND TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.handCount[player] != post->handCount[player])
+    {
+        printf("HC:     %d                %d\n", pre.handCount[player], post->handCount[player]);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("HAND COUNT TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    for(i = 0; i < post->deckCount[player]; i++)
+    {
+        if(pre.deck[player][i] != post->deck[player][i])
+        {
+            printf("deck[%d]:  %d                %d\n", i, pre.deck[player][i], post->deck[player][i]);
+            flag = 1;
+        }
+    }
+    if(flag == 1)
+        printf("DECK TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.deckCount[player] != post->deckCount[player])
+    {
+        printf("DeckC:  %d                %d\n", pre.deckCount[player], post->deckCount[player]);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("DECK COUNT TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    for(i = 0; i < post->discardCount[player]; i++)
+    {
+        if(pre.discard[player][i] != post->discard[player][i])
+        {
+            printf("Discard[%d]:  %d                %d\n", i, pre.discard[player][i], post->discard[player][i]);
+            flag = 1;
+        }
+    }
+    if(flag == 1)
+        printf("DISCARD TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.discardCount[player] != post->discardCount[player])
+    {
+        printf("DiscC:  %d                %d\n", pre.discardCount[player], post->discardCount[player]);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("DISCARD COUNT TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    for(i = 0; i < post->playedCardCount; i++)
+    {
+        if(pre.playedCards[i] != post->playedCards[i])
+        {
+            printf("Played Cards[%d]:  %d                %d\n", i, pre.playedCards[i], post->playedCards[i]);
+            flag = 1;
+        }
+    }
+    if(flag == 1)
+        printf("PLAYED CARDS TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    flag = 0;
+    if(pre.playedCardCount != post->playedCardCount)
+    {
+        printf("PCC:  %d                %d\n", pre.playedCardCount, post->playedCardCount);
+        flag = 1;
+    }
+    if(flag == 1)
+        printf("PC COUNT TEST FAILED!\n");
+    else
+        passedTestCounter++;
+    
+    if(passedTestCounter == 18)
+        printf("ALL TESTS PASSED!\n");
+    
+    /*compareReturn = memcmp(&pre, post, sizeof(struct gameState));
+    
+    printf("Compare return: %d\n", compareReturn);
+    if(memcmp(&pre, post, sizeof(struct gameState)) == 0)
+        printf("TEST PASSED: Oracle Complete\n");
+    */
+    return 0;
 }

@@ -1,116 +1,220 @@
-/*
-* Name: Jacob Wilson
-* Course: CS362_400 Summer 2017
-* Description: Unit test for updateCoins() function. The program
-*  sets up a game environment and performs a controlled test of
-*  the function in question. It determines tests failed or passed
-*  and prints out the results.
-* References: the updateCoins.c file as provided by the instructor
-*  was used as a template.
-*/
+/******************************************************************************************************
+*
+* Alan Seims
+* CS 362
+* Unit test for gainCard()
+*
+* The following line is including in the makefile:
+* testGainCard: unittest1.c dominion.o rngs.o
+*       $(CC) -o testGainCard -g unittest1.c dominion.o rngs.o $(CFLAGS)
+*
+*
+* int gainCard(int supplyPos, struct gameState *state, int toFlag, int player)
+* {
+*   //Note: supplyPos is enum of chosen card
+*
+*   //check if supply pile is empty (0) or card is not used in game (-1)
+*   if ( supplyCount(supplyPos, state) < 1 )
+*   {
+*       return -1;
+*   }
+*
+*   //added card for [whoseTurn] current player:
+*   // toFlag = 0 : add to discard
+*   // toFlag = 1 : add to deck
+*   // toFlag = 2 : add to hand
+*
+*   if (toFlag == 1)
+*   {
+*       state->deck[ player ][ state->deckCount[ player ] ] = supplyPos;
+*       state->deckCount[ player ]++;
+*   }
+*   else if (toFlag == 2)
+*   {
+*       state->hand[ player ][ state->handCount[ player ] ] = supplyPos;
+*       state->handCount[ player ]++;
+*   }
+*   else
+*   {
+*       state->discard[ player ][ state->discardCount[ player ] ] = supplyPos;
+*       state->discardCount[ player ]++;
+*   }
+*
+*   //decrease number in supply pile
+*   state->supplyCount[ supplyPos ]--;
+*
+*   return 0;
+* }
+******************************************************************************************************/
 
+
+#include "rngs.h"
 #include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include <assert.h>
-#include "rngs.h"
-#include <stdlib.h>
 
-/*
-* Name: assertTrue()
-* Input: one integer
-* Output: one integer
-* Description: The function takes the result of a comparison
-*  and prints a message depending on the result of the
-*  comparison. This result indicates success or failure of
-*  a given test.
-*/
+void assertTrue(int supplyPos, struct gameState *state, int player, int testType, int handCount);
 
-int assertTrue(int success) {
-	if (success) {
-		printf("PASSED\n\n");
-		return 1;
-	} else {
-		printf("FAILED\n\n");
-		return 0;
-	}
+int main()
+{
+    int i, it, j, l, m, p, r, handCount;
+    int seed = 1000;
+    int numPlayer = 2;
+    int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+    struct gameState G;
+    int maxHandCount = 5;
+    
+    //Arrays of all adventurers, council_rooms, and feasts.
+    int adventurers[MAX_HAND];
+    int council_rooms[MAX_HAND];
+    int feasts[MAX_HAND];
+    for(i = 0; i < MAX_HAND; i++)
+    {
+        adventurers[i] = adventurer;
+        council_rooms[i] = council_room;
+        feasts[i] = feast;
+    }
+    printf("--------------------TESTING GAINCARD()---------------------\n");
+    for(p = 0; p < numPlayer; p++)
+    {
+        for(handCount = 1; handCount <= maxHandCount; handCount++)
+        {
+            memset(&G, 23, sizeof(struct gameState)); //Clear the game state
+            r = initializeGame(numPlayer, k, seed, &G); //Initialize a new game
+            //G.handCount[p] = handCount; //Set the number of cards on hand
+            //memcpy(G.hand[p], adventurers, sizeof(int) * handCount); //Set all the cards to adventurer
+            if(p > 0)
+            {
+                G.whoseTurn = p;
+                for (it = 0; it < 5; it++){
+                    drawCard(p, &G);
+                }
+            }
+            printf("Test player %d with %d cards to add to the player's discard pile.\n", p, handCount);
+            for(j = 1; j <= handCount; j++)
+            {
+                gainCard(adventurer, &G, 0, p);
+            }
+            assertTrue(adventurer, &G, p, 0, handCount);
+            
+            printf("Test player %d with %d cards to add to the player's deck.\n", p, handCount);
+            for(l = 1; l <= handCount; l++)
+            {
+                gainCard(council_room, &G, 1, p);
+            }
+            assertTrue(council_room, &G, p, 1, handCount);
+            
+            printf("Test player %d with %d cards to add to the player's hand.\n", p, handCount);
+            for(m = 1; m <= handCount; m++)
+            {
+                gainCard(feast, &G, 2, p);
+            }
+            assertTrue(feast, &G, p, 2, handCount);
+            
+        }
+    }
+    
+    return 0;
 }
 
-int main() {
-	// variables to determine expected outcome
-	int handCards = 0, bonus = 0;
-	int maxHandCards = 5;
-	int maxBonus = 10;
-	int testFail = 0;
-	int i, j;
-	int copperCards[MAX_HAND];
-	int silverCards[MAX_HAND];
-	int goldCards[MAX_HAND];
+void assertTrue(int supplyPos, struct gameState *state, int player, int testType, int handCount)
+{
+    int i;
+    int discardTest = 0;
+    int deckTest = 0;
+    int handTest = 0;
 
-	// variables to set up the game state
-	int seed = 100;
-	int numPlayers = 2;
-	struct gameState testGame;				
-	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
-		sea_hag, tribute, smithy, council_room};
-
-	// set all treasure cards
-	for (i = 0; i < MAX_HAND; i++) {
-		copperCards[i] = copper;
-		silverCards[i] = silver;
-		goldCards[i] = gold;
-	}
-
-	printf("******* Testing updateCoins() *******\n\n");
-
-	// loop through each player setting various hand and bonus values
-	for (j = 0; j < numPlayers; j++) {
-		for (handCards = 0; handCards <= maxHandCards; handCards++) {
-			for (bonus = 0; bonus <= maxBonus; bonus++) {
-				int test1 = 0, test2 = 0, test3 = 0;
-
-				// set up the game for each player-card-bonus combination
-				printf("Player %d has %d treasure cards and %d bonus.\n", (j + 1), handCards, bonus);
-				memset(&testGame, 23, sizeof(struct gameState));
-				initializeGame(numPlayers, k, seed, &testGame);
-				testGame.handCount[j] = handCards;
-
-				// TEST for coppers in hand
-				memcpy(testGame.hand[j], copperCards, sizeof(int)*handCards);
-				updateCoins(j, &testGame, bonus);
-				printf("Number of coins= %d, expected = %d\n", testGame.coins, handCards * 1 + bonus);
-				printf("Copper result: ");
-				test1 = assertTrue(testGame.coins == (handCards * 1 + bonus));
-
-				// TEST for silvers in hand
-				memcpy(testGame.hand[j], silverCards, sizeof(int)*handCards);
-				updateCoins(j, &testGame, bonus);
-				printf("Number of coins= %d, expected = %d\n", testGame.coins, handCards * 2 + bonus);
-				printf("Silver result: ");
-				test2 = assertTrue(testGame.coins == (handCards * 2 + bonus));
-
-				// TEST for golds in hand
-				memcpy(testGame.hand[j], goldCards, sizeof(int)*handCards);
-				updateCoins(j, &testGame, bonus);
-				printf("Number of coins= %d, expected = %d\n", testGame.coins, handCards * 3 + bonus);
-				printf("Gold result: ");
-				test3 = assertTrue(testGame.coins == (handCards * 3 + bonus));
-
-				// track if any tests have failed
-				if (!test1 || !test2 || !test3) {
-					testFail = 1;
-				}
-			}
-		}
-	}
-
-	// check for any failed tests
-	if (!testFail) {
-		printf("All tests PASSED!!\n\n");
-	} else {
-		printf("At least one test has FAILED\n\n");
-	}
-
-	return 0;
+    if(testType == 0)
+    {
+        if(handCount != state->discardCount[player])
+        {
+            printf("Discard count is incorrect for player %d!\n\n", player);
+            return;
+        }
+        
+        for(i = 0; i < state->discardCount[player]; i++)
+        {
+            if(state->discard[ player ][ i ] != supplyPos)
+                discardTest = 1;
+        }
+        
+        if(discardTest != 0)
+        {
+            printf("Discard test failed for player %d!\n\n", player);
+            return;
+        }
+        else
+            printf("Discard test passed for player %d!\n\n", player);
+        
+        if(state->supplyCount[supplyPos] != (10 - handCount))
+      {
+            printf("Supply count is incorrect for %d after player %d's turn!\n\n", supplyPos, player);
+            return;
+        }
+    }
+    
+    if(testType == 1)
+    {
+        //printf("Deck count is %d \n", state->deckCount[player]);
+        if((handCount + 5) != state->deckCount[player])
+        {
+            printf("Deck count is incorrect for player %d!\n\n", player);
+            return;
+        }
+        
+        for(i = 5; i < state->deckCount[player]; i++)
+        {
+            if(state->deck[ player ][ i ] != supplyPos)
+                deckTest = 1;
+        }
+        
+        if(deckTest != 0)
+        {
+            printf("Deck test failed for player %d!\n\n", player);
+            return;
+        }
+        else
+            printf("Deck test passed for player %d!\n\n", player);
+        
+        if(state->supplyCount[supplyPos] != (10 - handCount))
+        {
+            printf("Supply count is incorrect for %d after player %d's turn!\n\n", supplyPos, player);
+            return;
+        }
+    }
+    
+    if(testType == 2)
+    {
+        //printf("Hand count is %d \n", state->handCount[player]);
+        if((handCount + 5) != state->handCount[player])
+        //if((handCount) != state->handCount[player])
+        {
+            printf("Hand count is incorrect for player %d!\n\n", player);
+            return;
+        }
+        
+        for(i = 5; i < state->handCount[player]; i++)
+        //for(i = 0; i < state->handCount[player]; i++)
+        {
+            if(state->hand[ player ][ i ] != supplyPos)
+                handTest = 1;
+        }
+        
+        if(handTest != 0)
+        {
+            printf("Hand test failed for player %d!\n\n", player);
+            return;
+        }
+        else
+            printf("Hand test passed for player %d!\n\n", player);
+        
+        if(state->supplyCount[supplyPos] != (10 - handCount))
+        {
+            printf("Supply count is incorrect for %d after player %d's turn!\n\n", supplyPos, player);
+            return;
+        }
+    }
+    
+    return;
 }

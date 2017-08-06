@@ -1,148 +1,171 @@
-/*
-* Name: Jacob Wilson
-* Course: CS362_400 Summer 2017
-* Description: Unit test for Adventurer card. The program
-*  sets up a game environment and performs a controlled test of
-*  the function in question. It determines tests failed or passed
-*  and prints out the results.
-* References: the example file as provided by the instructor
-*  was used as a template.
-*/
+/******************************************************************************************************
+*
+* Alan Seims
+* CS 362
+* Unit test for playSmithy()
+*
+* The following line is including in the makefile:
+* testSmithyCard: cardtest1.c dominion.o rngs.o
+*       $(CC) -o testSmithyCard -g testcard1.c dominion.o rngs.o $(CFLAGS)
+*
+*
+* void playSmithy(int handPos, int currentPlayer, struct gameState *state)
+* {
+*       int i;
+*       //+3 Cards
+*       for (i = 0; i < 2; i++)
+*       {
+*           drawCard(currentPlayer, state);
+*       }
+*
+*       //discard card from hand
+*       discardCard(handPos, currentPlayer, state, 1);
+*
+*       return;
+* }
+******************************************************************************************************/
 
+
+#include "rngs.h"
 #include "dominion.h"
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
-#include <assert.h>
-#include "rngs.h"
-#include <stdlib.h>
 
-/*
-* Name: assertTrue()
-* Input: one integer
-* Output: one integer
-* Description: The function takes the result of a comparison
-*  and prints a message depending on the result of the
-*  comparison. This result indicates success or failure of
-*  a given test.
-*/
-int assertTrue(int success) {
-	if (success) {
-		printf("PASSED\n\n");
-		return 1;
-	} else {
-		printf("FAILED\n\n");
-		return 0;
-	}
+#define TESTCARD "Smithy"
+
+void assertTrue(struct gameState *state, struct gameState *testState, int player, int testType, int newCards, int discarded, int shuffleCards, int xtraCoins);
+
+int main()
+{
+    int newCards = 0;
+    int discarded = 1;
+    int xtraCoins = 0;
+    int shuffleCards = 0;
+    
+    int i, j, m, n, p;
+    int handpos = 0, choice1 = 0, choice2 = 0, choice3 = 0, bonus = 0;
+    int remove1, remove2;
+    int seed = 1000;
+    int numPlayers = 2;
+    int thisPlayer = 0;
+    struct gameState G, testG;
+    int k[10] = {adventurer, embargo, village, minion, mine, cutpurse, sea_hag, tribute, smithy, council_room};
+    
+    initializeGame(numPlayers, k, seed, &G); //Initialize a new game
+    
+    printf("------------------------------TESTING Card: %s -----------------------------------\n", TESTCARD);
+    printf("TEST: Player gains +3 cards\n");
+    
+    //copy the game state to  test case
+    memcpy(&testG, &G, sizeof(struct gameState));
+    
+    cardEffect(smithy, choice1, choice2, choice3, &testG, handpos, &bonus);
+    
+    newCards = 3;
+    
+    //Check the state for the player that played the Smithy card
+    assertTrue(&G, &testG, thisPlayer, 0, newCards, discarded, shuffleCards, xtraCoins);
+    assertTrue(&G, &testG, thisPlayer, 1, newCards, discarded, shuffleCards, xtraCoins);
+    assertTrue(&G, &testG, thisPlayer, 2, newCards, discarded, shuffleCards, xtraCoins);
+    
+    
+    //Ensure that the state for the other players did not change
+    newCards = 0;
+    discarded = 0;
+    
+    for(p = 1; p < numPlayers; p++)
+    {
+        printf("**Checking the state of player %d to ensure the Smithy card played by player 0 did not change other player's state.**\n\n", p);
+        for(n = 0; n < 3; n++)
+        {
+            assertTrue(&G, &testG, p, n, newCards, discarded, shuffleCards, xtraCoins);
+        }
+        
+    }
+    
+    //Ensure that a state change did not occur for the victory and kingdom card piles.
+    assertTrue(&G, &testG, thisPlayer, 3, newCards, discarded, shuffleCards, xtraCoins);
+    
+    printf("--------------------------------------------------------------------------------\n\n");
+    
+    return 0;
+    
 }
 
-/*
-* Name: isTreasureCard()
-* Input: one integer
-* Output: one integer
-* Description: The function takes a card as an argument
-*  and determines if the card is a Treasure card (can be
-*  either copper, silver, or gold). Returns 1 (True) if
-*  the card is a Treasure.
-*/
-int isTreasureCard(int card) {
-	if (card == copper || card == silver || card == gold) {
-		return 1;
-	} else {
-		return 0;
-	}
-}
-
-/*
-* Name: coinValue()
-* Input: one integer
-* Output: one integer
-* Description: The function takes a card as an argument
-*  and determines value of the card. It then returns the
-*  value of the card depending on if it's gold, silver,
-*  or copper.
-*/
-int coinValue(int card) {
-	if (card == gold) {
-		return 3;
-	} else if (card == silver) {
-		return 2;
-	} else if (card == copper) {
-		return 1;
-	}
-}
-
-int main() {
-	// variables to determine expected outcome
-	int gainCards = 0, discard = 0;
-	int numCoins = 0, gainCoins = 0;
-	int test1 = 0, test2 = 0, test3 = 0;
-	int wasPlayed = 0;
-	int i;
-
-	// variables to set up the game state
-	int currentPlayer = 0, handPos = 0;
-	int seed = 100;
-	int numPlayers = 2;
-	struct gameState runGame, testGame;				// two game states for comparison
-	int k[10] = {adventurer, embargo, village, minion, mine, cutpurse,
-		sea_hag, tribute, smithy, council_room};
-
-	initializeGame(numPlayers, k, seed, &runGame);
-	memcpy(&testGame, &runGame, sizeof(struct gameState));
-
-	// put cards into test hand
-	testGame.hand[currentPlayer][handPos] = adventurer;
-	testGame.hand[currentPlayer][handPos + 1] = copper;
-	testGame.hand[currentPlayer][handPos + 2] = copper;
-
-	// play the card
-	wasPlayed = cardEffect(adventurer, 0, 0, 0, &testGame, handPos, 0);
-
-	gainCards = 2;
-	discard = 1;
-
-	printf("******* Testing Adventurer Card *******\n\n");
-
-	// TEST that player gained two cards in hand
-	printf("Player should gain two cards:\n");
-	printf("hand count = %d, expected = %d\n", testGame.handCount[currentPlayer], (runGame.handCount[currentPlayer] + gainCards - discard));
-	printf("Hand count result: ");
-	test1 = assertTrue(testGame.handCount[currentPlayer] == (runGame.handCount[currentPlayer] + gainCards - discard));
-
-	// TEST that player gained coins
-	// count coins before playing card
-	for (i = 0; i < runGame.handCount[currentPlayer]; i++) {
-		if (isTreasureCard(runGame.hand[currentPlayer][i])) {
-			numCoins += coinValue(runGame.hand[currentPlayer][i]);
-		}
-	}
-
-	// count coins after playing card
-	for (i = 0; i < testGame.handCount[currentPlayer]; i++) {
-		if (isTreasureCard(testGame.hand[currentPlayer][i])) {
-			gainCoins += coinValue(testGame.hand[currentPlayer][i]);
-		}
-	}
-
-	printf("Player should gain some coins:\n");
-	printf("coin count = %d, expected = %d\n", numCoins, gainCoins);
-	printf("Coin count result: ");
-	test2 = assertTrue(numCoins < gainCoins);
-
-	// TEST the the card was played
-	printf("cardEffect should return 0:\n");
-	printf("return = %d, expected = 0\n", wasPlayed);
-	printf("Play card result: ");
-	test3 = assertTrue(wasPlayed >= 0);
-
-
-	// check for any failed tests
-	if (test1 && test2 && test3) {
-		printf("All tests PASSED!!\n\n");
-	} else {
-		printf("At least one test has FAILED\n\n");
-	}
-
-	return 0;
+void assertTrue(struct gameState *state, struct gameState *testState, int player, int testType, int newCards, int discarded, int shuffleCards, int xtraCoins)
+{
+    int i;
+    int coinTest = 0;
+    int deckTest = 0;
+    int handTest = 0;
+    int kingVicTest = 0;
+    int cards;
+    if(testType == 0)
+    {
+        printf("Hand count = %d, Expected = %d\n", testState->handCount[player], state->handCount[player] + newCards - discarded);
+        if(testState->handCount[player] != (state->handCount[player] + newCards - discarded))
+        {
+            printf("Hand count is incorrect for player %d.\n", player);
+            handTest = 1;
+        }
+        if(handTest != 0)
+        {
+            printf("Hand count test failed for player %d!\n\n", player);
+            return;
+        }
+        else
+            printf("Hand count test passed for player %d!\n\n", player);
+    }
+    
+    if(testType == 1)
+    {
+        printf("Deck count = %d, Expected = %d\n", testState->deckCount[player], state->deckCount[player] - newCards + shuffleCards);
+        if(testState->deckCount[player] != (state->deckCount[player] - newCards + shuffleCards))
+        {
+            printf("Deck count is incorrect for player %d.\n", player);
+            deckTest = 1;
+        }
+        if(deckTest != 0)
+        {
+            printf("Deck count test failed for player %d!\n\n", player);
+            return;
+        }
+        else
+            printf("Deck count test passed for player %d!\n\n", player);
+    }
+    
+    if(testType == 2)
+    {
+        printf("Coins = %d, Expected = %d\n", testState->coins, state->coins + xtraCoins);
+        if(testState->coins != (state->coins  + xtraCoins))
+        {
+            printf("Coin count is incorrect for player %d.\n", player);
+            coinTest = 1;
+        }
+        if(coinTest != 0)
+        {
+            printf("Coin count test failed for player %d!\n\n", player);
+            return;
+        }
+        else
+            printf("Coin count test passed for player %d!\n\n", player);
+    }
+    
+    if(testType == 3)
+    {
+        printf("Checking that Kingdom and Victory cards counts did not change due to Smithy card being played.\n");
+        for(cards = 0; cards <= treasure_map; cards++)
+        {
+            if(testState->supplyCount[cards] != state->supplyCount[cards])
+            {
+                printf("Test failed! Kingdom and Victory card counts are incorrect.\n");
+                return;
+            }
+                
+        }
+        printf("Kingdom and Victory card test passed!\n\n");
+    }
+    
+    return;
 }
